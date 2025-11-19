@@ -1,0 +1,1 @@
+package books.java_main_service.model;import lombok.AllArgsConstructor;import lombok.Getter;import lombok.NoArgsConstructor;@Getter@AllArgsConstructor@NoArgsConstructorpublic class UserMainData {    private Long id;    private String role;}

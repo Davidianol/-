@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:17.5
+    container_name: postgres_container
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"  # Проброс порта для доступа к PostgreSQL локально
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Храним данные PostgreSQL в volume
+    networks:
+      - app-network
+  webservice:
+    build:
+      context: .
+      dockerfile: java-main-service/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - gradle-cache:/home/gradle/.gradle
+      - books_images:/app/uploads/books
+      - users_avatars:/app/uploads/avatars
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} #
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      AUTH_SERVER_ADDRESS: auth-service:50051
+    networks:
+      - app-network
+  auth-service:
+    build:
+      context: .
+      dockerfile: go-auth/Dockerfile
+    depends_on:
+      - postgres
+    expose:
+      - "50051"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      AUTH_SERVER_ADDRESS: ${AUTH_SERVER_ADDRESS}
+    volumes:
+      - users_avatars:/app/uploads/avatars
+    networks:
+      - app-network
+volumes:
+  postgres_data:
+  gradle-cache:
+  books_images: # Новый volume для книг
+  users_avatars:  # Новый volume для юзеров
+networks:
+  app-network:
+    driver: bridge

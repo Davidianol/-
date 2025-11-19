@@ -1,0 +1,1 @@
+package books.java_main_service.repository;import books.java_main_service.model.TotalDeals;import org.springframework.data.jpa.repository.JpaRepository;public interface TotalDealsRepository extends JpaRepository<TotalDeals, Long> {}

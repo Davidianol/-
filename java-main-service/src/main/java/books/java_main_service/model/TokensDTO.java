@@ -1,0 +1,1 @@
+package books.java_main_service.model;import lombok.AllArgsConstructor;import lombok.Getter;import lombok.NoArgsConstructor;import lombok.Setter;@Getter@Setter@AllArgsConstructor@NoArgsConstructorpublic class TokensDTO {    private String accessToken;    private String refreshToken;}

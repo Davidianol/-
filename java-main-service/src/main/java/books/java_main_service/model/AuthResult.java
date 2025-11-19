@@ -1,0 +1,1 @@
+package books.java_main_service.model;import lombok.Getter;@Getterpublic class AuthResult {    private final UserProfileDTO userProfile;    private final TokensDTO tokens;    public AuthResult(UserProfileDTO userProfile, TokensDTO tokens) {        this.userProfile = userProfile;        this.tokens = tokens;    }}
